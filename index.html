@@ -58,19 +58,6 @@
         .input-container button:hover {
             background-color: #45a049;
         }
-        .message {
-            margin: 10px 0;
-            padding: 5px;
-            border-radius: 5px;
-        }
-        .message.you {
-            background-color: #d1f7c4;
-            text-align: right;
-        }
-        .message.other {
-            background-color: #f1f1f1;
-            text-align: left;
-        }
     </style>
 </head>
 <body>
@@ -84,61 +71,45 @@
     </div>
 
     <script>
+        // Загружаем контейнер сообщений и поле ввода
         const messagesContainer = document.getElementById('messagesContainer');
         const messageInput = document.getElementById('messageInput');
 
-        // Функция для получения имени пользователя
-        function getUsername() {
-            let username = localStorage.getItem('username');
-            if (!username) {
-                username = prompt("Введите ваше имя:");
-                localStorage.setItem('username', username); // Сохраняем имя в localStorage
-            }
-            return username;
-        }
-
-        // Загрузка сообщений
+        // Функция для загрузки сообщений из localStorage
         function loadMessages() {
             const messages = JSON.parse(localStorage.getItem('messages')) || [];
-            messagesContainer.innerHTML = ''; // Очистить контейнер сообщений
+            messagesContainer.innerHTML = ''; // Очистить старые сообщения
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                if (message.username === getUsername()) {
-                    messageDiv.classList.add('you'); // Если сообщение от текущего пользователя
-                    messageDiv.textContent = Вы: ${message.text};
-                } else {
-                    messageDiv.classList.add('other'); // Если сообщение от другого пользователя
-                    messageDiv.textContent = ${message.username}: ${message.text};
-                }
+                messageDiv.textContent = message;
                 messagesContainer.appendChild(messageDiv);
             });
-            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Прокручиваем вниз
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Прокручиваем к последнему сообщению
         }
 
-        // Отправка сообщения
+        // Функция для отправки нового сообщения
         function sendMessage() {
             const message = messageInput.value.trim();
             if (message) {
-const username = getUsername(); // Получаем имя пользователя
+                // Загружаем текущие сообщения из localStorage
                 const messages = JSON.parse(localStorage.getItem('messages')) || [];
-                messages.push({ text: message, username: username }); // Добавляем новое сообщение
-                localStorage.setItem('messages', JSON.stringify(messages)); // Сохраняем сообщение в localStorage
-                messageInput.value = ''; // Очищаем поле ввода
-                loadMessages(); // Обновляем список сообщений
+                messages.push(message); // Добавляем новое сообщение
+
+                // Сохраняем обновленный список сообщений в localStorage
+                localStorage.setItem('messages', JSON.stringify(messages));
+
+                // Очистить поле ввода
+                messageInput.value = '';
+
+                // Перезагружаем отображение сообщений
+                loadMessages();
             }
         }
 
-        // Обработчик изменений в localStorage (для других вкладок)
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'messages') {
-                loadMessages(); // Перезагружаем сообщения, если они изменились
-            }
-        });
-
-        // Загружаем сообщения при загрузке страницы
+        // Загружаем сообщения при первой загрузке страницы
         loadMessages();
     </script>
 
 </body>
 </html>
+

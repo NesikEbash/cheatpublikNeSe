@@ -98,34 +98,33 @@
         // Загрузка сообщений
         function loadMessages() {
             const messages = JSON.parse(localStorage.getItem('messages')) || [];
-            messagesContainer.innerHTML = '';
+            messagesContainer.innerHTML = ''; // Очистить контейнер сообщений
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 if (message.username === getUsername()) {
-                    messageDiv.classList.add('you');
+                    messageDiv.classList.add('you'); // Если сообщение от текущего пользователя
                     messageDiv.textContent = Вы: ${message.text};
                 } else {
-                    messageDiv.classList.add('other');
+                    messageDiv.classList.add('other'); // Если сообщение от другого пользователя
                     messageDiv.textContent = ${message.username}: ${message.text};
                 }
                 messagesContainer.appendChild(messageDiv);
             });
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight; // Прокручиваем вниз
         }
 
         // Отправка сообщения
         function sendMessage() {
             const message = messageInput.value.trim();
             if (message) {
-                const username = getUsername(); // Получаем имя пользователя
+const username = getUsername(); // Получаем имя пользователя
                 const messages = JSON.parse(localStorage.getItem('messages')) || [];
-                messages.
-push({ text: message, username: username });
+                messages.push({ text: message, username: username }); // Добавляем новое сообщение
                 localStorage.setItem('messages', JSON.stringify(messages)); // Сохраняем сообщение в localStorage
 
                 messageInput.value = ''; // Очищаем поле ввода
-                loadMessages(); // Обновляем сообщения
+                loadMessages(); // Обновляем список сообщений
             }
         }
 
